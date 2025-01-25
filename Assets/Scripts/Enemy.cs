@@ -8,11 +8,8 @@ using UnityEngine.Rendering;
 public class Enemy : MonoBehaviour
 {
     public float moveSpeed = 2f;
-    private int health = 3;
+    [SerializeField] private float health = 5f;
     private Transform player;
-
-    private const string isRunningKey = "isRunning";
-    private const string playerTag = "Player";
 
     private void Start()
     {
@@ -28,16 +25,17 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            EnemyTakesDamage(1);
-            // Debug.Log("Player hit by enemy");
+            EnemyTakesDamage(1.5f);
         }
     }
 
-    public void EnemyTakesDamage(int damage)
+
+    public void EnemyTakesDamage(float damage)
     {
         health -= damage;
         if (health <= 0)

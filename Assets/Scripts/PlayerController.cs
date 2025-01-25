@@ -3,6 +3,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 30f;
+    public float smoothTime = 0.2f;
+
+    private Vector3 velocity = Vector3.zero;
 
     private void Update()
     {
@@ -12,5 +15,8 @@ public class PlayerController : MonoBehaviour
         targetPosition.z = transform.position.z;
 
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+
+        // transform.position =
+        //     Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime, moveSpeed);
     }
 }
