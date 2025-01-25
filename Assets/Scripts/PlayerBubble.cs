@@ -44,7 +44,6 @@ public class PlayerBubble : MonoBehaviour
         }
     }
 
-    // ReSharper disable Unity.PerformanceAnalysis
     private void CreateBubble()
     {
         Vector3 spawnPosition = transform.position + bubbleOffset;

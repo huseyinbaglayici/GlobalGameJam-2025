@@ -1,20 +1,8 @@
 using UnityEngine;
 
-public interface IEnemy
-{
-    void Attack();
-    void Chase();
-}
-
-
-
-
 [RequireComponent(typeof(SpriteRenderer))]
-public abstract class Enemy : MonoBehaviour,IEnemy
+public class Enemy : MonoBehaviour
 {
-    public abstract void Attack();
-    public abstract void Chase();
-    
     [Header("Enemy Settings")]
     [SerializeField] private float moveSpeed = 2f;
     [SerializeField] private int maxHealth = 5;

@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour
         canDash = false;
         dashDirection = (targetPosition - transform.position).normalized;
 
-        playerBubble.CreateBubbleLineForDash(dashDirection, 5, 10);
+        playerBubble.CreateBubbleLineForDash(dashDirection, 5, 12);
 
         float dashTimeLeft = dashDuration;
         while (dashTimeLeft > 0)
@@ -94,7 +94,7 @@ public class PlayerController : MonoBehaviour
     {
         isDashing = true; // Boomerang sırasında başka işlem yapılmasını engelle
         float returnSpeed = dashPower; // Geri dönüş hızı
-        playerBubble.CreateBubbleLineForDash(dashDirection, 5, 10);
+        playerBubble.CreateBubbleLineForDash(dashDirection, 5, 12);
 
         while (Vector3.Distance(transform.position, posBeforeDash) > 0.1f)
         {
