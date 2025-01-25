@@ -1,16 +1,15 @@
-using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public int moveSpeed = 50;
+    public float moveSpeed = 30f;
 
     private void Update()
     {
-        // mouse kordinatlari
+        // Get the mouse position in world space
         Vector3 targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        targetPosition.z = 0f;
+        targetPosition.z = transform.position.z;
 
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
     }
