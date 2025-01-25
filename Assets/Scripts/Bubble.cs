@@ -12,15 +12,30 @@ public class Bubble : MonoBehaviour
 
     public async void InitializeBubble()
     {
+        // Nesne yoksa, işleme devam etme
+        if (this == null) return;
+
         CorrectedPosition();
 
-        transform.DOLocalMoveY(transform.position.y + 2.5f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
-        //lifetime
-        awa it UniTask.WaitForSeconds(4f);
-        DOTween.Kill(transform);
-        if (isEnemyCatched) return;
-        Destroy(gameObject);
+        // Tween hareketini başlat
+        var tween = transform.DOLocalMoveY(transform.position.y + 2.5f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+
+        // Süreyi bekle
+        await UniTask.WaitForSeconds(4f);
+
+        // Nesne yoksa, işleme devam etme
+        if (this == null) return;
+
+        // Tween'i durdur
+        tween.Kill();
+
+        // Eğer düşman yakalanmamışsa, nesneyi yok et
+        if (!isEnemyCatched)
+        {
+            Destroy(gameObject);
+        }
     }
+
 
     private void CorrectedPosition()
     {

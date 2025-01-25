@@ -687,6 +687,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 25
+  playerBubble: {fileID: 1060073833}
   isDashing: 0
   dashPower: 150
 --- !u!61 &1060073831
