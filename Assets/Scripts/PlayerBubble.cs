@@ -1,29 +1,32 @@
 using System;
+using DG.Tweening;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerBubble : MonoBehaviour
 {
-    public BubblePool bubblePool; // ref Bubble
-    public float bubbleCoolDown = 0.5f; // Baloncuk birakma araligi
-    private float bubbleTimer = 0f; //Zamanlayici
+    public GameObject bubblePrefab;
+    public Vector3 bubbleOffset;
+    public float bubbleCoolDown = 0.5f;
+    private float bubbleTimer = 0f;
 
     private void Update()
-    {   // bubble birakma araligini kontrol et ?
-
+    {
         bubbleTimer -= Time.deltaTime;
         if (bubbleTimer <= 0f)
         {
             CreateBubble();
             bubbleTimer = bubbleCoolDown;
         }
-
     }
 
     private void CreateBubble()
     {
-        GameObject bubble = bubblePool.GetBubble();
-        bubble.transform.position = transform.position; // baloncugu oyuncunun konumuna GETIR
-        bubble.GetComponent<Bubble>().InitializeBubble(); // baloncugu baslat
-        
+        Vector3 spawnPosition = transform.position + bubbleOffset;
+        Debug.Log("Spawn Position: " + spawnPosition);
+
+        GameObject bubble = Instantiate(bubblePrefab, spawnPosition, quaternion.identity);
+        var bubbleScript = bubble.GetComponent<Bubble>();
+        bubbleScript.InitializeBubble();
     }
 }
