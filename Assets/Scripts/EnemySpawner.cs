@@ -1,8 +1,4 @@
-using System;
-using UnityEditor.Timeline.Actions;
 using UnityEngine;
-using Random = UnityEngine.Random;
-
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
@@ -24,7 +20,6 @@ public class EnemySpawner : MonoBehaviour
             Vector2 spawnPosition = (Vector2)player.position + Random.insideUnitCircle.normalized * spawnRadius;
 
             Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
-
         }
     }
 }

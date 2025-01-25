@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -83,6 +82,7 @@ public class PlayerController : MonoBehaviour
         canDash = true;
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     private async void EnableReturnToPreviousPosition()
     {
         canReturnToPreviousPosition = true; // Geri dönüş yapılabilir

@@ -11,7 +11,6 @@ public class PlayerBubble : MonoBehaviour
     [FormerlySerializedAs("bubbleCoolDown")]
     public float defaultBubbleCoolDown = 0.5f;
 
-    [SerializeField] private float dashBubbleMultiplier = 0.5f; // Dash sırasında soğuma süresi azaltıcı çarpan
     private float bubbleTimer = 0f;
 
     private void Update()
@@ -25,6 +24,7 @@ public class PlayerBubble : MonoBehaviour
         }
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public async void CreateBubbleLineForDash(Vector3 direction, float dashDistance, int bubbleCount)
     {
         // Dash'in her adımı için pozisyonlar hesaplanıyor
@@ -44,6 +44,7 @@ public class PlayerBubble : MonoBehaviour
         }
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     private void CreateBubble()
     {
         Vector3 spawnPosition = transform.position + bubbleOffset;

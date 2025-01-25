@@ -777,7 +777,6 @@ MonoBehaviour:
   bubblePrefab: {fileID: 4124633888045309757, guid: 97c7090c51451c543ba93eeea14cf730, type: 3}
   bubbleOffset: {x: 2, y: 0, z: 0}
   defaultBubbleCoolDown: 0.3
-  dashBubbleMultiplier: 0.5
 --- !u!1 &1102717153
 GameObject:
   m_ObjectHideFlags: 3
