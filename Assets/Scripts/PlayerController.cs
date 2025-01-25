@@ -1,79 +1,69 @@
-using System.Collections;
+using System;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public class PlayerController : MonoBehaviour
 {
     #region Movement Variables
 
     public float moveSpeed = 30f;
-    public float smoothTime = 0.2f;
 
     #endregion
+
+    public static PlayerController _instance;
 
     #region DashSettings
 
+    public PlayerBubble playerBubble;
     private bool canDash = true;
-    private bool isDashing = false;
+    public bool isDashing = false;
     [SerializeField] private float dashPower = 20f;
     private float dashDuration = 0.2f;
-    private float dashTimeLeft;
     private Vector3 dashDirection;
 
     #endregion
+
+    private void Awake()
+    {
+        if (_instance == null)
+        {
+            _instance = this;
+        }
+    }
 
     private void Update()
     {
         if (!isDashing)
         {
-            // Fare pozisyonuna doğru hareket
             Vector3 targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             targetPosition.z = transform.position.z;
 
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
 
-            // Sol tık ile dash başlat
             if (Input.GetMouseButtonDown(0) && canDash)
             {
-                StartDash(targetPosition);
+                StartDash(targetPosition).Forget();
             }
-        }
-        else
-        {
-            // Dash hareketini gerçekleştir
-            DashMovement();
         }
     }
 
-    private void StartDash(Vector3 targetPosition)
+    private async UniTaskVoid StartDash(Vector3 targetPosition)
     {
         isDashing = true;
         canDash = false;
-        dashTimeLeft = dashDuration; // Dash süresini sıfırla
         dashDirection = (targetPosition - transform.position).normalized;
-    }
-
-    private void DashMovement()
-    {
-        if (dashTimeLeft > 0)
+        playerBubble.CreateBubbleLineForDash(dashDirection, 5, 10);
+        float dashTimeLeft = dashDuration;
+        while (dashTimeLeft > 0)
         {
-            dashTimeLeft -= Time.deltaTime;
-            transform.position += dashDirection * (dashPower * Time.deltaTime);
+            float deltaTime = Time.deltaTime;
+            transform.position += dashDirection * (dashPower * deltaTime);
+            dashTimeLeft -= deltaTime;
+            await UniTask.Yield(PlayerLoopTiming.Update);
         }
-        else
-        {
-            EndDash();
-        }
-    }
 
-    private void EndDash()
-    {
         isDashing = false;
-        StartCoroutine(DashCooldown()); // Cooldown başlat
-    }
-
-    private IEnumerator DashCooldown()
-    {
-        yield return new WaitForSeconds(1f); // 1 saniyelik cooldown süresi
+        await UniTask.WaitForSeconds(1f);
         canDash = true;
     }
 }

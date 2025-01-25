@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 5619654473271450996}
   - component: {fileID: 5443570822522441705}
   - component: {fileID: 5140459374717279539}
-  - component: {fileID: 5956679669356716514}
   - component: {fileID: 3385999597168125940}
   - component: {fileID: 9137435802120617503}
+  - component: {fileID: 5956679669356716514}
   m_Layer: 0
   m_Name: BubblePrefab
   m_TagString: Untagged
@@ -109,18 +109,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5956679669356716514
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4124633888045309757}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a81f4fbfc827bc34ca22c17a0a7ab7a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!50 &3385999597168125940
 Rigidbody2D:
   serializedVersion: 4
@@ -183,3 +171,16 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 5.6299996, y: 5.425293}
   m_Direction: 0
+--- !u!114 &5956679669356716514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4124633888045309757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a81f4fbfc827bc34ca22c17a0a7ab7a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bubbleDurationTime: 2

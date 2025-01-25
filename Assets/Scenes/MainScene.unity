@@ -687,8 +687,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 25
-  smoothTime: 0.2
-  dashPower: 50
+  isDashing: 0
+  dashPower: 150
 --- !u!61 &1060073831
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -774,8 +774,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bubblePrefab: {fileID: 4124633888045309757, guid: 97c7090c51451c543ba93eeea14cf730, type: 3}
-  bubbleOffset: {x: 4.05, y: 0, z: 0}
-  bubbleCoolDown: 0.5
+  bubbleOffset: {x: 2, y: 0, z: 0}
+  defaultBubbleCoolDown: 0.3
+  dashBubbleMultiplier: 0.5
 --- !u!1 &1102717153
 GameObject:
   m_ObjectHideFlags: 3
