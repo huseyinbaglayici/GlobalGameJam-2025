@@ -15,12 +15,24 @@ public class Bubble : MonoBehaviour
         CorrectedPosition();
 
         transform.DOLocalMoveY(transform.position.y + 2.5f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
-        //lifetime
+
+        // Lifetime (4 saniye bekleme)
         await UniTask.WaitForSeconds(4f);
+
+        // Destroy edilmiş mi kontrol et
+        if (this == null || gameObject == null)
+        {
+            Debug.LogWarning("Bubble has been destroyed, skipping further actions.");
+            return;
+        }
+
         DOTween.Kill(transform);
+
         if (isEnemyCatched) return;
+
         Destroy(gameObject);
     }
+ 
 
     private void CorrectedPosition()
     {
