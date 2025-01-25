@@ -8,7 +8,7 @@ using UnityEngine.Rendering;
 public class Enemy : MonoBehaviour
 {
     public float moveSpeed = 2f;
-    [SerializeField] private float health = 5f;
+    [SerializeField] private int health = 5;
     private Transform player;
 
     private void Start()
@@ -30,17 +30,22 @@ public class Enemy : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            EnemyTakesDamage(1.5f);
+            EnemyTakesDamage(1);
         }
     }
 
 
-    public void EnemyTakesDamage(float damage)
+    public void EnemyTakesDamage(int damage)
     {
         health -= damage;
         if (health <= 0)
         {
-            Destroy(gameObject);
+            Die();
         }
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
     }
 }

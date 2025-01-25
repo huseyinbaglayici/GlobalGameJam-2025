@@ -8,21 +8,23 @@ using UnityEngine;
 public class Bubble : MonoBehaviour
 {
     private const string EnemyTag = "Enemy";
+    private bool isEnemyCatched;
 
     public async void InitializeBubble()
     {
         CorrectedPosition();
-        
+
         transform.DOLocalMoveY(transform.position.y + 2.5f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
         //lifetime
-        await UniTask.WaitForSeconds(5f);
+        await UniTask.WaitForSeconds(4f);
         DOTween.Kill(transform);
+        if (isEnemyCatched) return;
         Destroy(gameObject);
     }
 
     private void CorrectedPosition()
     {
-        Vector3 correctedPosition =transform.position;
+        Vector3 correctedPosition = transform.position;
         correctedPosition.z = 0;
         transform.position = correctedPosition;
     }
@@ -31,11 +33,15 @@ public class Bubble : MonoBehaviour
     {
         if (other.CompareTag(EnemyTag))
         {
-            Debug.Log("enemy ile etkilesime girdi");
-            //enemy'i parent olarak bubble a alacaksın setparent
-            // bu bubble'ı yukarı dogru transform position ++ ekeleyeceksin kıi mantıken yukarı dogru gidiyor anamaı versin
-            //sonra bir patlama aniamasoyun bu da dotween doscale 0* yparak scale'ini 0 yapparak ilk bastaki an im asiyopnsu yapsaiblrisin
-            
+            isEnemyCatched = true;
+            other.transform.SetParent(transform);
+            other.transform.GetComponent<BoxCollider2D>().enabled = false;
+            other.transform.DOLocalMove(Vector3.zero, 1f);
+            transform.DOScale(0, 1f).SetEase(Ease.InBounce).OnComplete(() =>
+            {
+                Destroy(gameObject);
+                isEnemyCatched = false;
+            });
         }
     }
 }

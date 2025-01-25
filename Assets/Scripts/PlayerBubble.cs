@@ -21,7 +21,7 @@ public class PlayerBubble : MonoBehaviour
     }
 
     private void CreateBubble()
-    {
+    {   
         Vector3 spawnPosition = transform.position + bubbleOffset;
         Debug.Log("Spawn Position: " + spawnPosition);
 
