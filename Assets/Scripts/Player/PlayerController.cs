@@ -75,6 +75,7 @@ public class PlayerController : MonoBehaviour
 
     private async UniTaskVoid StartDash(Vector3 targetPosition)
     {
+        SpriteFlash.Instance.StartFlash(0.05f);
         TakeDamage(10);
         posBeforeDash = transform.position; // Dash öncesi pozisyonu kaydet
         isDashing = true;
@@ -109,6 +110,7 @@ public class PlayerController : MonoBehaviour
 
     private async UniTaskVoid BoomerangBackToPosition()
     {
+        SpriteFlash.Instance.StartFlash(0.05f);
         isDashing = true; // Boomerang sırasında başka işlem yapılmasını engelle
         float returnSpeed = dashPower; // Geri dönüş hızı
         playerBubble.CreateBubbleLineForDash(dashDirection, 5, 12);
