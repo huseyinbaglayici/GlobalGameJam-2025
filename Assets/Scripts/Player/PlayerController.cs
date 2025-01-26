@@ -30,15 +30,14 @@ public class PlayerController : MonoBehaviour
     #region Health
 
     public float maxHealth = 999f; // Maksimum can
-    public float currentHealth = 100;
-    public float startingHealth = 100f; // Mevcut can
+    public float currentHealth = 100f; // Mevcut can
+    public float startingHealth = 100f; // Sağlık başlangıcı
 
     public Image healthBar;
 
     private void Start()
     {
-        currentHealth = startingHealth;
-        
+        currentHealth = startingHealth; // Başlangıçta mevcut canı ayarlıyoruz
     }
 
     #endregion
@@ -76,6 +75,7 @@ public class PlayerController : MonoBehaviour
 
     private async UniTaskVoid StartDash(Vector3 targetPosition)
     {
+        TakeDamage(10);
         posBeforeDash = transform.position; // Dash öncesi pozisyonu kaydet
         isDashing = true;
         canDash = false;
@@ -112,7 +112,8 @@ public class PlayerController : MonoBehaviour
         isDashing = true; // Boomerang sırasında başka işlem yapılmasını engelle
         float returnSpeed = dashPower; // Geri dönüş hızı
         playerBubble.CreateBubbleLineForDash(dashDirection, 5, 12);
-
+        TakeDamage(5);
+        
         while (Vector3.Distance(transform.position, posBeforeDash) > 0.1f)
         {
             transform.position = Vector3.MoveTowards(transform.position, posBeforeDash, returnSpeed * Time.deltaTime);
@@ -128,14 +129,13 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        startingHealth -= damage;
-
+        currentHealth -= damage; // Mevcut canı düşür
         if (currentHealth < 0)
-            startingHealth = 0; 
+            currentHealth = 0;
 
-        UpdateHealthBar(); 
+        UpdateHealthBar();
 
-        if (startingHealth <= 0)
+        if (currentHealth <= 0)
         {
             Die();
         }
@@ -145,15 +145,14 @@ public class PlayerController : MonoBehaviour
     {
         if (healthBar != null)
         {
-            // Sağlık barını startingHealth'e göre güncelle
-            healthBar.fillAmount = startingHealth / currentHealth;
+            // Sağlık barını currentHealth'e göre güncelle
+            healthBar.fillAmount = currentHealth / startingHealth;
         }
     }
 
-
     public void Heal(float amount)
     {
-        startingHealth += amount;
+        currentHealth += amount;
 
         if (currentHealth > maxHealth)
             currentHealth = maxHealth; // Sağlık maksimum değeri aşamaz
