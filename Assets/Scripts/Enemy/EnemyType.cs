@@ -4,9 +4,8 @@ using UnityEngine;
 public class EnemyType : ScriptableObject
 {
     public string enemyName;
-    public Sprite enemySprite;
-    public float health;
+    public GameObject enemyPrefab; // Düşman prefab'ı
+    public int health;
     public float speed;
     public int damage;
-
 }

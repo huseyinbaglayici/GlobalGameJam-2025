@@ -6,7 +6,7 @@ public class KillCountManager : MonoBehaviour
     public static KillCountManager Instance; // Singleton erişimi için
 
     [SerializeField] private TMP_Text killCountText; // TMP_Text kullanıyoruz
-    private int killCount = 0;
+    internal int killCount = 0;
 
     private void Awake()
     {

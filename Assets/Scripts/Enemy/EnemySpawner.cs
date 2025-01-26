@@ -1,9 +1,11 @@
 using UnityEngine;
+
 public class EnemySpawner : MonoBehaviour
 {
-    public GameObject enemyPrefab;
-    public float spawnInterval = 2f; //spawn suresi
-    public float spawnRadius = 50f; // oyuncuya gore
+    public GameObject enemyPrefab;       // İlk düşman türü prefab'ı
+    public GameObject enemyPrefab2;      // İkinci düşman türü prefab'ı
+    public float spawnInterval = 2f;     // Spawn süresi
+    public float spawnRadius = 50f;      // Oyuncuya göre spawn mesafesi
 
     private Transform player;
 
@@ -17,9 +19,14 @@ public class EnemySpawner : MonoBehaviour
     {
         if (player != null)
         {
+            // KillCounterManager.Instance.killcount'a göre prefab seç
+            GameObject prefabToSpawn = KillCountManager.Instance.killCount >= 10 ? enemyPrefab2 : enemyPrefab;
+
+            // Spawn pozisyonunu belirle
             Vector2 spawnPosition = (Vector2)player.position + Random.insideUnitCircle.normalized * spawnRadius;
 
-            Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+            // Prefab'ı oluştur
+            Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
         }
     }
 }

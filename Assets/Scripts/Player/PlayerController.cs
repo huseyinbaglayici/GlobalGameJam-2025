@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour
     private float dashDuration = 0.2f;
     private Vector3 dashDirection;
     private Vector3 posBeforeDash;
+    
+    public float flashDuration = 0.1f; // Flash süresi
 
     private bool canReturnToPreviousPosition = false; // Sağ tıkla dönüş yapılabilir mi?
 
@@ -75,7 +77,7 @@ public class PlayerController : MonoBehaviour
 
     private async UniTaskVoid StartDash(Vector3 targetPosition)
     {
-        SpriteFlash.Instance.StartFlash(0.05f);
+        SpriteFlash.Instance.StartFlash(flashDuration);
         TakeDamage(10);
         posBeforeDash = transform.position; // Dash öncesi pozisyonu kaydet
         isDashing = true;
@@ -110,7 +112,7 @@ public class PlayerController : MonoBehaviour
 
     private async UniTaskVoid BoomerangBackToPosition()
     {
-        SpriteFlash.Instance.StartFlash(0.05f);
+        SpriteFlash.Instance.StartFlash(flashDuration); 
         isDashing = true; // Boomerang sırasında başka işlem yapılmasını engelle
         float returnSpeed = dashPower; // Geri dönüş hızı
         playerBubble.CreateBubbleLineForDash(dashDirection, 5, 12);

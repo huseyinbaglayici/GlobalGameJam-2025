@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Enemy2
   m_EditorClassIdentifier: 
   enemyName: 
-  enemySprite: {fileID: 0}
+  enemyPrefab: {fileID: 0}
   health: 0
-  speed: 0
+  speed: 12
   damage: 0

@@ -18,7 +18,7 @@ public class Bubble : MonoBehaviour
         var tween = transform.DOLocalMoveY(transform.position.y + 2.5f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
 
         // Süreyi bekle
-        await UniTask.WaitForSeconds(4f);
+        await UniTask.WaitForSeconds(1f);
 
         // Nesne yoksa, işleme devam etme
         if (this == null) return;
@@ -29,6 +29,7 @@ public class Bubble : MonoBehaviour
         // Eğer düşman yakalanmamışsa, nesneyi yok et
         if (!isEnemyCatched)
         {
+            Vector3 l= gameObject.transform.position;
             Destroy(gameObject);
         }
     }

@@ -4,8 +4,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [Header("Enemy Settings")]
-    [SerializeField] private float moveSpeed = 2f;
-    [SerializeField] private int maxHealth = 5;
+    [SerializeField] private EnemyType enemyType; // Düşman türünü temsil eden ScriptableObject
 
     private int currentHealth;
     private Transform player;
@@ -13,11 +12,21 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
-        currentHealth = maxHealth;
+        if (enemyType == null)
+        {
+            Debug.LogError("Enemy Type is not assigned!");
+            return;
+        }
 
+        currentHealth = enemyType.health; // Health'i EnemyType'tan alıyoruz
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
-
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Düşmanın sprite'ını prefab'tan alalım
+        if (enemyType.enemyPrefab != null)
+        {
+            spriteRenderer.sprite = enemyType.enemyPrefab.GetComponent<SpriteRenderer>().sprite;
+        }
     }
 
     private void Update()
@@ -25,31 +34,8 @@ public class Enemy : MonoBehaviour
         if (player != null)
         {
             Vector3 direction = (player.position - transform.position).normalized;
-            transform.position += direction * (moveSpeed * Time.deltaTime);
+            transform.position += direction * (enemyType.speed * Time.deltaTime); // Speed'i EnemyType'tan alıyoruz
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            EnemyTakesDamage(1);
-        }
-    }
-
-    public void EnemyTakesDamage(int damage)
-    {
-        currentHealth -= damage;
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-    }
-
-    private void Die()
-    {
-        // Düşmanı yok et
-        Destroy(gameObject);
-    }
 }
