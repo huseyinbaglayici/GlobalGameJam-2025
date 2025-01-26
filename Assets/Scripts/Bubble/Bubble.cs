@@ -52,6 +52,7 @@ public class Bubble : MonoBehaviour
             transform.DOScale(0, 1f).SetEase(Ease.InBounce).OnComplete(() =>
             {
                 Destroy(gameObject);
+                KillCountManager.Instance?.IncrementKillCount();
                 isEnemyCatched = false;
             });
         }

@@ -12,6 +12,7 @@ public class PlayerEnemyCollision : MonoBehaviour
         if (other.gameObject.CompareTag("Enemy"))
         {
             OnHit?.Invoke();
+            PlayerController._instance.TakeDamage(10);
         }
     }
 }

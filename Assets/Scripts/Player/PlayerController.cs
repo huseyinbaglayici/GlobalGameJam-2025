@@ -1,6 +1,7 @@
 using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -23,6 +24,22 @@ public class PlayerController : MonoBehaviour
     private Vector3 posBeforeDash;
 
     private bool canReturnToPreviousPosition = false; // Sağ tıkla dönüş yapılabilir mi?
+
+    #endregion
+
+    #region Health
+
+    public float maxHealth = 999f; // Maksimum can
+    public float currentHealth = 100;
+    public float startingHealth = 100f; // Mevcut can
+
+    public Image healthBar;
+
+    private void Start()
+    {
+        currentHealth = startingHealth;
+        
+    }
 
     #endregion
 
@@ -106,4 +123,49 @@ public class PlayerController : MonoBehaviour
         isDashing = false;
         canDash = true; // Boomerang tamamlandıktan sonra tekrar dash yapılabilir
     }
+
+    #region Health System
+
+    public void TakeDamage(float damage)
+    {
+        startingHealth -= damage;
+
+        if (currentHealth < 0)
+            startingHealth = 0; 
+
+        UpdateHealthBar(); 
+
+        if (startingHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void UpdateHealthBar()
+    {
+        if (healthBar != null)
+        {
+            // Sağlık barını startingHealth'e göre güncelle
+            healthBar.fillAmount = startingHealth / currentHealth;
+        }
+    }
+
+
+    public void Heal(float amount)
+    {
+        startingHealth += amount;
+
+        if (currentHealth > maxHealth)
+            currentHealth = maxHealth; // Sağlık maksimum değeri aşamaz
+
+        UpdateHealthBar(); // Sağlık barını güncelle
+    }
+
+    private void Die()
+    {
+        Debug.Log("Player has died!");
+        // Ölümle ilgili diğer işlemler burada yapılabilir
+    }
+
+    #endregion
 }
