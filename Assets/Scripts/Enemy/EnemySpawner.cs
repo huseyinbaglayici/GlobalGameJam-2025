@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
+    public static EnemySpawner instance;
+
+    public bool canSpawn = true; // Düşman spawn edilip edilmeyeceğini kontrol eder
     public GameObject enemyPrefab;       // İlk düşman türü prefab'ı
     public GameObject enemyPrefab2;      // İkinci düşman türü prefab'ı
     public float spawnInterval = 2f;     // Spawn süresi
@@ -11,15 +14,24 @@ public class EnemySpawner : MonoBehaviour
 
     private void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         player = GameObject.FindGameObjectWithTag("Player").transform;
         InvokeRepeating(nameof(SpawnEnemy), spawnInterval, spawnInterval);
     }
 
     private void SpawnEnemy()
     {
-        if (player != null)
+        if (canSpawn && player != null) // canSpawn true olduğunda spawn işlemi yapılacak
         {
-            // KillCounterManager.Instance.killcount'a göre prefab seç
+            // KillCounterManager.Instance.killCount'a göre prefab seç
             GameObject prefabToSpawn = KillCountManager.Instance.killCount >= 10 ? enemyPrefab2 : enemyPrefab;
 
             // Spawn pozisyonunu belirle

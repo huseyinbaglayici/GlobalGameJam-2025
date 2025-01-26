@@ -1,6 +1,9 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
@@ -8,6 +11,7 @@ public class PlayerController : MonoBehaviour
     #region Movement Variables
 
     public float moveSpeed = 30f;
+    public bool playerCanMove = true; // Oyuncunun hareket edebilirliği
 
     #endregion
 
@@ -22,24 +26,25 @@ public class PlayerController : MonoBehaviour
     private float dashDuration = 0.2f;
     private Vector3 dashDirection;
     private Vector3 posBeforeDash;
-    
-    public float flashDuration = 0.1f; // Flash süresi
 
-    private bool canReturnToPreviousPosition = false; // Sağ tıkla dönüş yapılabilir mi?
+    public GameObject toiletPrefab; 
+    public float flashDuration = 0.1f;
+
+    private bool canReturnToPreviousPosition = false;
 
     #endregion
 
     #region Health
 
-    public float maxHealth = 999f; // Maksimum can
-    public float currentHealth = 100f; // Mevcut can
-    public float startingHealth = 100f; // Sağlık başlangıcı
+    public float maxHealth = 999f;
+    public float currentHealth = 100f;
+    public float startingHealth = 100f;
 
     public Image healthBar;
 
     private void Start()
     {
-        currentHealth = startingHealth; // Başlangıçta mevcut canı ayarlıyoruz
+        currentHealth = startingHealth;
     }
 
     #endregion
@@ -54,7 +59,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (!isDashing)
+        if (playerCanMove && !isDashing)
         {
             Vector3 targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             targetPosition.z = transform.position.z;
@@ -67,19 +72,26 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (KillCountManager.Instance.isPulling)
+        {
+            LevelCompletePlayerMove();
+        }
+
         // Sağ tık kontrolü
         if (Input.GetMouseButtonDown(1) && canReturnToPreviousPosition)
         {
-            canReturnToPreviousPosition = false; // Geri dönüş sadece bir kez yapılabilir
+            canReturnToPreviousPosition = false;
             BoomerangBackToPosition().Forget();
         }
     }
 
     private async UniTaskVoid StartDash(Vector3 targetPosition)
     {
+        if (!playerCanMove || this == null) return;
+
         SpriteFlash.Instance.StartFlash(flashDuration);
         TakeDamage(10);
-        posBeforeDash = transform.position; // Dash öncesi pozisyonu kaydet
+        posBeforeDash = transform.position;
         isDashing = true;
         canDash = false;
         dashDirection = (targetPosition - transform.position).normalized;
@@ -89,6 +101,7 @@ public class PlayerController : MonoBehaviour
         float dashTimeLeft = dashDuration;
         while (dashTimeLeft > 0)
         {
+            if (this == null) return;
             float deltaTime = Time.deltaTime;
             transform.position += dashDirection * (dashPower * deltaTime);
             dashTimeLeft -= deltaTime;
@@ -96,44 +109,48 @@ public class PlayerController : MonoBehaviour
         }
 
         isDashing = false;
-        EnableReturnToPreviousPosition(); // Sağ tıkla geri dönüş iznini başlat
+        EnableReturnToPreviousPosition();
 
         await UniTask.WaitForSeconds(1f);
         canDash = true;
     }
 
-    // ReSharper disable Unity.PerformanceAnalysis
     private async void EnableReturnToPreviousPosition()
     {
-        canReturnToPreviousPosition = true; // Geri dönüş yapılabilir
-        await UniTask.Delay(TimeSpan.FromSeconds(2)); // 2 saniye bekle
-        canReturnToPreviousPosition = false; // Süre dolduktan sonra geri dönüş yapılamaz
+        if (this == null) return;
+
+        canReturnToPreviousPosition = true;
+        await UniTask.Delay(TimeSpan.FromSeconds(2));
+        canReturnToPreviousPosition = false;
     }
 
     private async UniTaskVoid BoomerangBackToPosition()
     {
-        SpriteFlash.Instance.StartFlash(flashDuration); 
-        isDashing = true; // Boomerang sırasında başka işlem yapılmasını engelle
-        float returnSpeed = dashPower; // Geri dönüş hızı
+        if (!playerCanMove || this == null) return;
+
+        SpriteFlash.Instance.StartFlash(flashDuration);
+        isDashing = true;
+        float returnSpeed = dashPower;
         playerBubble.CreateBubbleLineForDash(dashDirection, 5, 12);
         TakeDamage(5);
-        
+
         while (Vector3.Distance(transform.position, posBeforeDash) > 0.1f)
         {
+            if (this == null) return;
             transform.position = Vector3.MoveTowards(transform.position, posBeforeDash, returnSpeed * Time.deltaTime);
             await UniTask.Yield(PlayerLoopTiming.Update);
         }
 
-        transform.position = posBeforeDash; // Son pozisyonu düzelt
+        transform.position = posBeforeDash;
         isDashing = false;
-        canDash = true; // Boomerang tamamlandıktan sonra tekrar dash yapılabilir
+        canDash = true;
     }
 
     #region Health System
 
     public void TakeDamage(float damage)
     {
-        currentHealth -= damage; // Mevcut canı düşür
+        currentHealth -= damage;
         if (currentHealth < 0)
             currentHealth = 0;
 
@@ -149,7 +166,6 @@ public class PlayerController : MonoBehaviour
     {
         if (healthBar != null)
         {
-            // Sağlık barını currentHealth'e göre güncelle
             healthBar.fillAmount = currentHealth / startingHealth;
         }
     }
@@ -159,15 +175,49 @@ public class PlayerController : MonoBehaviour
         currentHealth += amount;
 
         if (currentHealth > maxHealth)
-            currentHealth = maxHealth; // Sağlık maksimum değeri aşamaz
+            currentHealth = maxHealth;
 
-        UpdateHealthBar(); // Sağlık barını güncelle
+        UpdateHealthBar();
+    }
+
+    public void LevelCompletePlayerMove()
+    {
+        if (this == null) return;
+
+        EnemySpawner.instance.canSpawn = false;
+        playerCanMove = false; // Oyuncunun hareketini durdur
+        Vector3 targetPosition = toiletPrefab.transform.position; // Hedef pozisyon olarak tuvaleti belirle
+        MoveToPosition(targetPosition).Forget();
+        StartCoroutine(nameof(EndGame));
+    }
+
+    IEnumerator EndGame()
+    {
+        if (this == null) yield break;
+
+        Debug.Log("EndGame coroutine başlatıldı.");
+        yield return new WaitForSeconds(4f);
+        Debug.Log("4 saniye geçti.");
+        SceneManager.LoadScene(0);
+    }
+
+    private async UniTaskVoid MoveToPosition(Vector3 targetPosition)
+    {
+        if (this == null) return;
+
+        while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
+        {
+            if (this == null) return;
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+            await UniTask.Yield(PlayerLoopTiming.Update);
+        }
+
+        transform.position = targetPosition; // Nihai pozisyona tam olarak yerleştir
     }
 
     private void Die()
     {
-        Debug.Log("Player has died!");
-        // Ölümle ilgili diğer işlemler burada yapılabilir
+        MenuController.Instance.GameOver();
     }
 
     #endregion

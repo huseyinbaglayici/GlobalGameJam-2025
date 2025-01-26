@@ -29,11 +29,10 @@ public class Bubble : MonoBehaviour
         // Eğer düşman yakalanmamışsa, nesneyi yok et
         if (!isEnemyCatched)
         {
-            Vector3 l= gameObject.transform.position;
+            Vector3 l = gameObject.transform.position;
             Destroy(gameObject);
         }
     }
-
 
     private void CorrectedPosition()
     {
@@ -46,16 +45,26 @@ public class Bubble : MonoBehaviour
     {
         if (other.CompareTag(EnemyTag))
         {
-            isEnemyCatched = true;
-            other.transform.SetParent(transform);
-            other.transform.GetComponent<BoxCollider2D>().enabled = false;
-            other.transform.DOLocalMove(Vector3.zero, 1f);
-            transform.DOScale(0, 1f).SetEase(Ease.InBounce).OnComplete(() =>
+            if (!isEnemyCatched)
             {
-                Destroy(gameObject);
-                KillCountManager.Instance?.IncrementKillCount();
-                isEnemyCatched = false;
-            });
+                isEnemyCatched = true;
+                
+                // Düşmanı balona yakala
+                other.transform.SetParent(transform);
+                other.transform.GetComponent<BoxCollider2D>().enabled = false;
+                other.transform.DOLocalMove(Vector3.zero, 1f);
+                
+                // EnemyDeath sesini çal
+                SoundManager.instance.PlayEnemyDeathSound();
+
+                // Balon patladığında düşmanı yok et
+                transform.DOScale(0, 1f).SetEase(Ease.InBounce).OnComplete(() =>
+                {
+                    Destroy(gameObject);
+                    KillCountManager.Instance?.IncrementKillCount();
+                    isEnemyCatched = false;
+                });
+            }
         }
     }
 }
